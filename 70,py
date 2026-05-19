@@ -1,0 +1,34 @@
+#7.
+import pandas as pd
+import numpy as np
+!pip install pgmpy
+
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.inference import VariableElimination
+df = pd.read_csv('heart.csv')
+df = df.replace("?", np.nan)
+model = DiscreteBayesianNetwork([
+    ('age', 'trestbps'),
+    ('age', 'fbs'),
+    ('sex', 'trestbps'),
+    ('exang', 'trestbps'),
+    ('trestbps', 'target'), # Changed from 'heartdisease'
+    ('fbs', 'target'),      # Changed from 'heartdiesease'
+    ('target', 'restecg'),
+    ('target', 'thalach'),
+    ('target', 'chol')
+    ])
+print("\n Learning CPD using maximum liklihood estimator")
+model.fit(df)
+print("\n Probabability of heart disease given age = 63\n ")
+q1 = infer.query(
+    variables=['target'],
+    evidence={'age': 63}
+)
+print(q1)
+print("\n Probabability of heart disease given cholestrol = 233\n ")
+q2 = infer.query(
+    variables=['target'],
+    evidence={'chol': 233}
+)
+print(q2)
